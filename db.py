@@ -26,7 +26,13 @@ def get_questions():
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT question_id, question_text, points, hint
+                SELECT
+                    question_id,
+                    question_text,
+                    points,
+                    hint,
+                    expected_sql,
+                    expected_result
                 FROM public.student_questions
                 ORDER BY question_id
             """)

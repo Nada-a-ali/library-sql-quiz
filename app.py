@@ -40,10 +40,24 @@ if st.session_state.get("auth_session"):
     try:
         questions = get_questions()
 
-        for question_id, question_text, points, hint in questions:
+        for (
+            question_id,
+            question_text,
+            points,
+            hint,
+            expected_sql,
+            expected_result,
+        ) in questions:
             with st.expander(f"Question {question_id} — {points} points"):
                 st.write(question_text)
                 st.info(f"Hint: {hint}")
+
+                with st.expander("Show Expected SQL and Result"):
+                    st.write("**Expected SQL:**")
+                    st.code(expected_sql, language="sql")
+
+                    st.write("**Expected Result:**")
+                    st.code(expected_result, language="text")
 
                 sql_query = st.text_area(
                     "Write your SQL query:",
