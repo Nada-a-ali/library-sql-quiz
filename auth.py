@@ -69,8 +69,6 @@ def show_auth():
                         "password": new_password,
                     }
                 )
-                st.success(
-                    "Check your email for a confirmation " "link before signing in."
-                )
+                st.success("Account created successfully! You can now sign in.")
             except Exception as error:
                 st.error(f"Registration failed: {error}")
