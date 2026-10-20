@@ -1,0 +1,45 @@
+
+name: PostgreSQL Connection Check
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  check-database:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install psycopg[binary]
+
+      - name: Test restricted PostgreSQL connection
+        env:
+          QUIZ_DATABASE_URL: ${{ secrets.QUIZ_DATABASE_URL }}
+        run: |
+          python - <<'PY'
+          import os
+          import psycopg
+
+          url = os.environ["QUIZ_DATABASE_URL"]
+
+          with psycopg.connect(url, connect_timeout=10, sslmode="require") as conn:
+              with conn.cursor() as cur:
+                  cur.execute("SELECT COUNT(*) FROM public.books")
+                  count = cur.fetchone()[0]
+                  assert count == 10, f"Expected 10 books, got {count}"
+
+                  cur.execute("SELECT COUNT(*) FROM public.student_questions")
+                  questions = cur.fetchone()[0]
+                  assert questions == 5, f"Expected 5 questions, got {questions}"
+
+          print("PostgreSQL connection and quiz data verified!")
+          PY
