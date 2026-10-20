@@ -1,0 +1,15 @@
+# Python virtual environment
+.venv/
+
+# Database credentials and secrets
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Python temporary files
+__pycache__/
+*.pyc
+
+# Mac system files
+.DS_Store
